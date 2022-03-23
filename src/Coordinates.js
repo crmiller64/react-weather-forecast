@@ -1,7 +1,10 @@
+import './Coordinates.css';
+
 import { useEffect, useState } from "react";
 import Geocoding from "@mapbox/mapbox-sdk/services/geocoding";
 
 import addFormValidation from "./utils/addFormValidation";
+import states from "./utils/usStates"
 
 const Coordinates = (props) => {
     const [ city, setCity ] = useState("");
@@ -14,20 +17,28 @@ const Coordinates = (props) => {
 
     const handleSubmit = (event) => {
         // TODO add error handling if mapbox doesn't return anything (could flash error message and return user to form?)
-        const geocodingResponse = geocodingService
+        geocodingService
             .forwardGeocode({
                 query: `${ city }, ${ state }`,
-                limit: 1
+                limit: 1,
             })
             .send()
             .then(response => {
-                console.log(response.body.features[0].geometry);
+                const [ lon, lat ] = response.body.features[0].geometry.coordinates;
+                setLatitude(lat);
+                setLongitude(lon);
             }, error => {
                 console.log(error);
             });
 
         event.preventDefault();
     }
+
+    const stateOptions = states.map((state, index) =>
+        <option key={ state.abbreviation } value={ state.abbreviation }>
+            { state.name }
+        </option>
+    );
 
     useEffect(() => {
         addFormValidation()
@@ -55,16 +66,19 @@ const Coordinates = (props) => {
                             </div>
                         </div>
                         <div className="mb-3">
-                            <label htmlFor="longitude" className="form-label">State</label>
-                            <input
-                                className="form-control"
-                                type="text"
+                            <label htmlFor="state" className="form-label">State</label>
+                            <select
+                                className="form-select"
+                                aria-label="US states"
                                 id="state"
                                 name="state"
                                 value={ state }
-                                required
                                 onChange={ event => setState(event.target.value) }
-                            />
+                                required
+                                size="10"
+                            >
+                                { stateOptions }
+                            </select>
                             <div className="invalid-feedback">
                                 A state is required.
                             </div>

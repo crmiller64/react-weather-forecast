@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import Geocoding from "@mapbox/mapbox-sdk/services/geocoding";
+
 import addFormValidation from "./utils/addFormValidation";
 
 const Coordinates = (props) => {
@@ -7,8 +9,23 @@ const Coordinates = (props) => {
     const [ latitude, setLatitude ] = useState(0);
     const [ longitude, setLongitude ] = useState(0);
 
+    const mapboxToken = process.env.REACT_APP_MAPBOX_TOKEN;
+    const geocodingService = Geocoding({ accessToken: mapboxToken });
+
     const handleSubmit = (event) => {
-        alert("Coordinates have been submitted!");
+        // TODO add error handling if mapbox doesn't return anything (could flash error message and return user to form?)
+        const geocodingResponse = geocodingService
+            .forwardGeocode({
+                query: `${ city }, ${ state }`,
+                limit: 1
+            })
+            .send()
+            .then(response => {
+                console.log(response.body.features[0].geometry);
+            }, error => {
+                console.log(error);
+            });
+
         event.preventDefault();
     }
 

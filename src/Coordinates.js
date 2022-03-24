@@ -6,16 +6,16 @@ import Geocoding from "@mapbox/mapbox-sdk/services/geocoding";
 import addFormValidation from "./utils/addFormValidation";
 import states from "./utils/usStates"
 
-const Coordinates = (props) => {
+const Coordinates = props => {
     const [ city, setCity ] = useState("");
     const [ state, setState ] = useState("");
-    const [ latitude, setLatitude ] = useState(0);
-    const [ longitude, setLongitude ] = useState(0);
 
     const mapboxToken = process.env.REACT_APP_MAPBOX_TOKEN;
     const geocodingService = Geocoding({ accessToken: mapboxToken });
 
-    const handleSubmit = (event) => {
+    const handleSubmit = event => {
+        event.preventDefault();
+
         // TODO add error handling if mapbox doesn't return anything (could flash error message and return user to form?)
         geocodingService
             .forwardGeocode({
@@ -24,14 +24,11 @@ const Coordinates = (props) => {
             })
             .send()
             .then(response => {
-                const [ lon, lat ] = response.body.features[0].geometry.coordinates;
-                setLatitude(lat);
-                setLongitude(lon);
+                const [ longitude, latitude ] = response.body.features[0].geometry.coordinates;
+                props.onSubmit(latitude, longitude);
             }, error => {
                 console.log(error);
             });
-
-        event.preventDefault();
     }
 
     const stateOptions = states.map((state, index) =>
@@ -39,6 +36,13 @@ const Coordinates = (props) => {
             { state.name }
         </option>
     );
+
+    const coordinates = () => {
+        if (props.coordinates.latitude && props.coordinates.longitude) {
+            return { latitude: props.coordinates.latitude, longitude: props.coordinates.longitude };
+        }
+        return false;
+    }
 
     useEffect(() => {
         addFormValidation()
@@ -86,9 +90,13 @@ const Coordinates = (props) => {
                         <div className="mb-3">
                             <button className="btn btn-primary">Submit</button>
                         </div>
-                        <div className="mb-3">
-                            <span className="form-text">Your coordinates are: { latitude }, { longitude }</span>
-                        </div>
+                        { coordinates() &&
+                            <div className="mb-3">
+                                <span className="form-text">
+                                    Your coordinates are: { coordinates().latitude }, { coordinates().longitude }
+                                </span>
+                            </div>
+                        }
                     </form>
                 </div>
             </div>

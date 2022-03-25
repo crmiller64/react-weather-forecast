@@ -1,5 +1,5 @@
 // taken from https://dmitripavlutin.com/how-to-compare-objects-in-javascript/
-export default function shallowEqual(object1, object2) {
+const isShallowEqual = (object1, object2) => {
     const keys1 = Object.keys(object1);
     const keys2 = Object.keys(object2);
     if (keys1.length !== keys2.length) {
@@ -12,3 +12,5 @@ export default function shallowEqual(object1, object2) {
     }
     return true;
 }
+
+export default isShallowEqual;

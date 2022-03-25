@@ -3,12 +3,14 @@ import './Coordinates.css';
 import { useEffect, useState } from "react";
 import Geocoding from "@mapbox/mapbox-sdk/services/geocoding";
 
+import { handleWeatherGovError, weatherGovApiRequest } from "./utils/weatherGovApiRequest";
 import addFormValidation from "./utils/addFormValidation";
 import states from "./utils/usStates"
 
 const Coordinates = props => {
     const [ city, setCity ] = useState("");
     const [ state, setState ] = useState("");
+    const [ observationStations, setObservationStations ] = useState([]);
 
     const mapboxToken = process.env.REACT_APP_MAPBOX_TOKEN;
     const geocodingService = Geocoding({ accessToken: mapboxToken });
@@ -26,7 +28,12 @@ const Coordinates = props => {
                 const [ longitude, latitude ] = response.body.features[0].geometry.coordinates;
                 props.onSubmit(latitude, longitude);
             }, error => {
-                props.onError(error);
+                console.log(error);
+                props.onError({
+                    message: "A problem occurred while getting coordinates for the given city and state. " +
+                        "Please check the console log for details.",
+                    error: error
+                });
             });
     }
 
@@ -44,8 +51,20 @@ const Coordinates = props => {
     }
 
     useEffect(() => {
-        addFormValidation()
+        addFormValidation();
     });
+
+    useEffect(() => {
+        if (props.observationStationUrl) {
+            weatherGovApiRequest(props.observationStationUrl)
+                .then(data => {
+                    setObservationStations(data.features)
+                })
+                .catch(error => {
+                    props.onError(handleWeatherGovError(error));
+                });
+        }
+    }, [ props.observationStationUrl ]);
 
     return (
         <div className="mt-5">
@@ -99,12 +118,12 @@ const Coordinates = props => {
                                 </span>
                             </div>
                         }
-                        { props.observationStation &&
+                        { observationStations.length > 0 &&
                             <div className="mb-3">
                                 <span className="form-text">
                                     Your nearest observation station is: {
-                                    `${ props.observationStation.properties.name } 
-                                    (${ props.observationStation.properties.stationIdentifier })`
+                                    `${ observationStations[0].properties.name } 
+                                    (${ observationStations[0].properties.stationIdentifier })`
                                 }
                                 </span>
                             </div>

@@ -7,7 +7,7 @@ import Forecast from "./Forecast";
 
 import shallowEqual from "./utils/shallowEqual";
 
-function App() {
+const App = () => {
     const [ coordinates, setCoordinates ] = useState({ latitude: 0, longitude: 0 });
     const [ todayForecast, setTodayForecast ] = useState(null);
     const [ forecastPeriods, setForecastPeriods ] = useState([]);

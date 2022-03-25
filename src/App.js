@@ -3,10 +3,10 @@ import { useEffect, useRef, useState } from "react";
 
 import Coordinates from "./Coordinates";
 import Forecasts from "./Forecasts";
+import HourlyForecasts from "./HourlyForecasts";
 
 import isShallowEqual from "./utils/objectShallowEqual";
 import { weatherGovApiRequest, handleWeatherGovError } from "./utils/weatherGovApiRequest";
-import HourlyForecasts from "./HourlyForecasts";
 
 const App = () => {
     const [ coordinates, setCoordinates ] = useState({ latitude: 0, longitude: 0 });
@@ -64,6 +64,8 @@ const App = () => {
                         forecastHourlyUrl={ forecastUrls.forecastHourlyUrl }
                     />
                 </div>
+            </div>
+            <div className="row">
                 <div className="col-12">
                     <Forecasts
                         onError={ (error) => handleError(error) }

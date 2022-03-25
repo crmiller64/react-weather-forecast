@@ -35,7 +35,7 @@ const HourlyForecasts = props => {
     );
 
     return (
-        <div className="card shadow mh-100 overflow-auto">
+        <div className="card shadow">
             <div className="card-body">
                 <h5 className="card-title">Hourly Forecast</h5>
                 <div className="list-group">

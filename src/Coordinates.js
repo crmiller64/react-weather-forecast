@@ -1,5 +1,3 @@
-import './Coordinates.css';
-
 import { useEffect, useState } from "react";
 import Geocoding from "@mapbox/mapbox-sdk/services/geocoding";
 

@@ -42,15 +42,15 @@ const App = () => {
     }, [ coordinates ])
 
     return (
-        <div className="container my-5 vh-100">
+        <div className="container my-5">
             { error &&
                 <div className="alert alert-danger" role="alert">
                     { error.message }
                 </div>
             }
             <h1>Weather Forecast (USA)</h1>
-            <div className="row h-50 mt-5">
-                <div className="col-sm-4 col-xl-6 mh-100">
+            <div className="row gy-5 mt-1">
+                <div className="col-sm-4 col-xl-6">
                     <Coordinates
                         onSubmit={ (latitude, longitude) => handleSubmit(latitude, longitude) }
                         onError={ (error) => handleError(error) }
@@ -58,14 +58,14 @@ const App = () => {
                         observationStationUrl={ forecastUrls.observationStationsUrl }
                     />
                 </div>
-                <div className="col-sm-8 col-xl-6 mh-100">
+                <div className="col-sm-8 col-xl-6">
                     <HourlyForecasts
                         onError={ (error) => handleError(error) }
                         forecastHourlyUrl={ forecastUrls.forecastHourlyUrl }
                     />
                 </div>
             </div>
-            <div className="row mt-5 pb-5">
+            <div className="row mt-5">
                 <div className="col-12">
                     <Forecasts
                         onError={ (error) => handleError(error) }

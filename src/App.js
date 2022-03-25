@@ -74,7 +74,7 @@ const App = () => {
     }, [ coordinates ])
 
     return (
-        <div className="container mt-5 mb-3">
+        <div className="container my-5">
             { error &&
                 <div className="alert alert-danger" role="alert">
                     { error.detail }

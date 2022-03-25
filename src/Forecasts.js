@@ -31,13 +31,11 @@ const Forecasts = props => {
     );
 
     return (
-        <div className="mt-5">
-            <div className="card shadow">
-                <div className="card-body">
-                    <h5 className="card-title">Daily Forecast</h5>
-                    <div className="list-group">
-                        { forecasts }
-                    </div>
+        <div className="card shadow">
+            <div className="card-body">
+                <h5 className="card-title">Daily Forecast</h5>
+                <div className="list-group">
+                    { forecasts }
                 </div>
             </div>
         </div>

@@ -67,69 +67,67 @@ const Coordinates = props => {
     }, [ props.observationStationUrl ]);
 
     return (
-        <div className="mt-5">
-            <div className="card shadow">
-                <div className="card-body">
-                    <h5 className="card-title">Location</h5>
-                    <form className="validated-form" onSubmit={ handleSubmit } noValidate>
-                        <div className="mb-3">
-                            <label htmlFor="city" className="form-label">City</label>
-                            <input
-                                className="form-control"
-                                type="text"
-                                id="city"
-                                name="city"
-                                value={ city }
-                                required
-                                onChange={ event => setCity(event.target.value) }
-                            />
-                            <div className="invalid-feedback">
-                                A city is required.
-                            </div>
+        <div className="card shadow">
+            <div className="card-body">
+                <h5 className="card-title">Location</h5>
+                <form className="validated-form" onSubmit={ handleSubmit } noValidate>
+                    <div className="mb-3">
+                        <label htmlFor="city" className="form-label">City</label>
+                        <input
+                            className="form-control"
+                            type="text"
+                            id="city"
+                            name="city"
+                            value={ city }
+                            required
+                            onChange={ event => setCity(event.target.value) }
+                        />
+                        <div className="invalid-feedback">
+                            A city is required.
                         </div>
-                        <div className="mb-3">
-                            <label htmlFor="state" className="form-label">State</label>
-                            <select
-                                className="form-select"
-                                aria-label="US states"
-                                id="state"
-                                name="state"
-                                value={ state }
-                                onChange={ event => setState(event.target.value) }
-                                required
-                                size="10"
-                            >
-                                { stateOptions }
-                            </select>
-                            <div className="invalid-feedback">
-                                A state is required.
-                            </div>
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="state" className="form-label">State</label>
+                        <select
+                            className="form-select"
+                            aria-label="US states"
+                            id="state"
+                            name="state"
+                            value={ state }
+                            onChange={ event => setState(event.target.value) }
+                            required
+                            size="10"
+                        >
+                            { stateOptions }
+                        </select>
+                        <div className="invalid-feedback">
+                            A state is required.
                         </div>
+                    </div>
+                    <div className="mb-3">
+                        <button className="btn btn-primary">Submit</button>
+                    </div>
+                    { coordinates() &&
                         <div className="mb-3">
-                            <button className="btn btn-primary">Submit</button>
-                        </div>
-                        { coordinates() &&
-                            <div className="mb-3">
                                 <span className="form-text">
                                     Your coordinates are: {
                                     `${ coordinates().latitude.toFixed(2) }, 
                                     ${ coordinates().longitude.toFixed(2) }`
                                 }
                                 </span>
-                            </div>
-                        }
-                        { observationStations.length > 0 &&
-                            <div className="mb-3">
+                        </div>
+                    }
+                    { observationStations.length > 0 &&
+                        <div className="mb-3">
                                 <span className="form-text">
                                     Your nearest observation station is: {
                                     `${ observationStations[0].properties.name } 
                                     (${ observationStations[0].properties.stationIdentifier })`
                                 }
                                 </span>
-                            </div>
-                        }
-                    </form>
-                </div>
+                        </div>
+                    }
+                </form>
             </div>
         </div>
     );

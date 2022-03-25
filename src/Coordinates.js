@@ -16,7 +16,6 @@ const Coordinates = props => {
     const handleSubmit = event => {
         event.preventDefault();
 
-        // TODO add error handling if mapbox doesn't return anything (could flash error message and return user to form?)
         geocodingService
             .forwardGeocode({
                 query: `${ city }, ${ state }`,
@@ -27,7 +26,7 @@ const Coordinates = props => {
                 const [ longitude, latitude ] = response.body.features[0].geometry.coordinates;
                 props.onSubmit(latitude, longitude);
             }, error => {
-                console.log(error);
+                props.onError(error);
             });
     }
 
@@ -93,7 +92,20 @@ const Coordinates = props => {
                         { coordinates() &&
                             <div className="mb-3">
                                 <span className="form-text">
-                                    Your coordinates are: { coordinates().latitude }, { coordinates().longitude }
+                                    Your coordinates are: {
+                                    `${ coordinates().latitude.toFixed(2) }, 
+                                    ${ coordinates().longitude.toFixed(2) }`
+                                }
+                                </span>
+                            </div>
+                        }
+                        { props.observationStation &&
+                            <div className="mb-3">
+                                <span className="form-text">
+                                    Your nearest observation station is: {
+                                    `${ props.observationStation.properties.name } 
+                                    (${ props.observationStation.properties.stationIdentifier })`
+                                }
                                 </span>
                             </div>
                         }

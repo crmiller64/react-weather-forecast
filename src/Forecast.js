@@ -7,19 +7,19 @@ const Forecast = props => {
                     <div>
                         <h6 className="mb-3">{ props.forecast.shortForecast }</h6>
                         <div className="container">
-                            <div className="row mb-3">
-                                <div className="col-md-2">
+                            <div className="row gx-0 mb-3">
+                                <div className="col-lg-1 col-xl-2 col-xxl-1">
                                     High:
                                 </div>
-                                <div className="col">
+                                <div className="col-lg-7">
                                     { props.forecast.temperature }&deg;{ props.forecast.temperatureUnit }
                                 </div>
                             </div>
-                            <div className="row mb-3">
-                                <div className="col-md-2">
+                            <div className="row gx-0 mb-3">
+                                <div className="col-lg-1 col-xl-2 col-xxl-1">
                                     Wind:
                                 </div>
-                                <div className="col">
+                                <div className="col-lg-7">
                                     { props.forecast.windSpeed } { props.forecast.windDirection }
                                 </div>
                             </div>

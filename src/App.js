@@ -1,48 +1,23 @@
 import './App.css';
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import axios from "axios";
 
 import Coordinates from "./Coordinates";
 import Forecast from "./Forecast";
-import states from "./utils/usStates";
+
+import shallowEqual from "./utils/shallowEqual";
 
 function App() {
-    const [ coordinates, setCoordinates ] = useState({
-        latitude: null,
-        longitude: null
-    });
+    const [ coordinates, setCoordinates ] = useState({ latitude: 0, longitude: 0 });
     const [ todayForecast, setTodayForecast ] = useState(null);
     const [ forecastPeriods, setForecastPeriods ] = useState([]);
 
+    const previousCoordinatesRef = useRef({ latitude: 0, longitude: 0 });
+
     const [ error, setError ] = useState(null);
-    const [ isLoaded, setIsLoaded ] = useState(false);
 
     const handleSubmit = (latitude, longitude) => {
         setCoordinates({ latitude: latitude, longitude: longitude });
-    }
-
-    const fetchForecastUrl = () => {
-        return new Promise((resolve, reject) => {
-            fetch(`https://api.weather.gov/points/${ coordinates.latitude },${ coordinates.longitude }`)
-                .then(res => res.json())
-                .then(data => {
-                    resolve(data.properties.forecast);
-                })
-                .catch(error => {
-                    reject(error);
-                })
-        });
-    }
-
-    const fetchForecast = url => {
-        fetch(url)
-            .then(res => res.json())
-            .then(data => {
-                setTodayForecast(data.properties.periods[0]);
-                setForecastPeriods(data.properties.periods.slice(1));
-            })
-            .catch(error => {
-                console.log(error);
-            })
     }
 
     const forecasts = () => {
@@ -54,29 +29,72 @@ function App() {
     }
 
     useEffect(() => {
-        if (coordinates.latitude && coordinates.longitude) {
+        if (!shallowEqual(previousCoordinatesRef.current, coordinates)) {
+            const fetchForecastUrl = () => {
+                return axios.get(`https://api.weather.gov/points/${ coordinates.latitude },${ coordinates.longitude }`)
+                    .then(response => {
+                        return response.data.properties.forecast;
+                    });
+            }
+
+            const fetchForecast = url => {
+                return axios.get(url)
+                    .then(response => {
+                        return response.data.properties.periods;
+                    });
+            }
+
             fetchForecastUrl()
                 .then(url => {
-                    fetchForecast(url);
+                    return fetchForecast(url);
+                })
+                .then(periods => {
+                    setTodayForecast(periods[0]);
+                    setForecastPeriods(periods.slice(1));
+                    setError(null);
+                    previousCoordinatesRef.current = coordinates;
                 })
                 .catch(error => {
-                    console.log(error);
-                })
+                    if (error.response) {
+                        // The request was made and the server responded with a non 200 status code
+                        console.log(error.response.data);
+                        console.log(error.response.status);
+                        console.log(error.response.headers);
+                        setError(error.response.data);
+                    } else if (error.request) {
+                        // The request was made but no response was received
+                        console.log(error.request);
+                        setError({
+                            detail: "Unable to get forecast data from weather.gov. Please try again later."
+                        });
+                    } else {
+                        // Something happened in setting up the request that triggered an error
+                        console.log('Error', error.message);
+                        setError({
+                            detail: "Unable to set up weather.gov request. Please check the console/logs for details."
+                        });
+                    }
+                });
         }
     }, [ coordinates ])
 
     return (
         <div className="container mt-5">
+            { error &&
+                <div className="alert alert-danger" role="alert">
+                    { error.detail }
+                </div>
+            }
             <h1>Weather Forecast (USA)</h1>
             <div className="row">
-                <div className="col-6">
+                <div className="col-sm-4 col-xl-6">
                     <Coordinates
                         onSubmit={ (latitude, longitude) => handleSubmit(latitude, longitude) }
                         coordinates={ coordinates }
                     />
                 </div>
                 { todayForecast &&
-                    <div className="col-6">
+                    <div className="col-sm-8 col-xl-6">
                         <Forecast forecast={ todayForecast }/>
                     </div>
                 }

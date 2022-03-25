@@ -30,27 +30,22 @@ const App = () => {
 
     useEffect(() => {
         if (!shallowEqual(previousCoordinatesRef.current, coordinates)) {
-            const fetchForecastUrl = () => {
-                return axios.get(`https://api.weather.gov/points/${ coordinates.latitude },${ coordinates.longitude }`)
-                    .then(response => {
-                        return response.data.properties.forecast;
-                    });
-            }
-
-            const fetchForecast = url => {
-                return axios.get(url)
-                    .then(response => {
-                        return response.data.properties.periods;
-                    });
-            }
-
-            fetchForecastUrl()
-                .then(url => {
-                    return fetchForecast(url);
+            const weatherGovApiRequest = (url) => {
+                return axios.get(url, {
+                    headers: { 'User-Agent': process.env.REACT_APP_WEATHER_GOV_USER_AGENT }
                 })
-                .then(periods => {
-                    setTodayForecast(periods[0]);
-                    setForecastPeriods(periods.slice(1));
+                    .then(response => {
+                        return response.data.properties;
+                    });
+            }
+
+            weatherGovApiRequest(`https://api.weather.gov/points/${ coordinates.latitude },${ coordinates.longitude }`)
+                .then(properties => {
+                    return weatherGovApiRequest(properties.forecast);
+                })
+                .then(properties => {
+                    setTodayForecast(properties.periods[0]);
+                    setForecastPeriods(properties.periods.slice(1));
                     setError(null);
                     previousCoordinatesRef.current = coordinates;
                 })

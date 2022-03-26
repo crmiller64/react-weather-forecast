@@ -25,6 +25,7 @@ const App = () => {
 
     useEffect(() => {
         if (submitCount > 0) {
+            setForecastUrls({});
             weatherGovApiRequest(
                 `https://api.weather.gov/points/${ coordinates.latitude },${ coordinates.longitude }`
             )
@@ -37,7 +38,6 @@ const App = () => {
                 })
                 .catch(error => {
                     setError(handleWeatherGovError(error));
-                    setForecastUrls({});
                 });
         }
     }, [ submitCount ])

@@ -1,9 +1,7 @@
 import axios from "axios";
 
 export const weatherGovApiRequest = url => {
-    return axios.get(url, {
-        // headers: { 'User-Agent': process.env.REACT_APP_WEATHER_GOV_USER_AGENT }
-    })
+    return axios.get(url)
         .then(response => {
             return response.data;
         })

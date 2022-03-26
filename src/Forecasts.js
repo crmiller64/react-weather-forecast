@@ -3,15 +3,21 @@ import { handleWeatherGovError, weatherGovApiRequest } from "./utils/weatherGovA
 
 const Forecasts = props => {
     const [ dailyForecasts, setDailyForecasts ] = useState([]);
+    const [ isLoading, setIsLoading ] = useState(false);
 
     useEffect(() => {
+        setDailyForecasts([]);
         if (props.forecastUrl) {
+            setIsLoading(true);
             weatherGovApiRequest(props.forecastUrl)
                 .then(data => {
                     setDailyForecasts(data.properties.periods);
                 })
                 .catch(error => {
                     props.onError(handleWeatherGovError(error));
+                })
+                .then(() => {
+                    setIsLoading(false);
                 });
         }
     }, [ props.forecastUrl ]);
@@ -34,9 +40,16 @@ const Forecasts = props => {
         <div className="card shadow">
             <div className="card-body">
                 <h5 className="card-title">Daily Forecast</h5>
-                <div className="list-group">
-                    { forecasts }
-                </div>
+                { isLoading &&
+                    <div className="spinner-border text-primary" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </div>
+                }
+                { !isLoading &&
+                    <div className="list-group">
+                        { forecasts }
+                    </div>
+                }
             </div>
         </div>
     );

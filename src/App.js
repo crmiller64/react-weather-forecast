@@ -9,14 +9,15 @@ import isShallowEqual from "./utils/objectShallowEqual";
 import { weatherGovApiRequest, handleWeatherGovError } from "./utils/weatherGovApiRequest";
 
 const App = () => {
+    const [ submitCount, setSubmitCount ] = useState(0);
     const [ coordinates, setCoordinates ] = useState({ latitude: 0, longitude: 0 });
     const [ forecastUrls, setForecastUrls ] = useState({});
     const [ error, setError ] = useState(null);
 
-    const previousCoordinatesRef = useRef({ latitude: 0, longitude: 0 });
-
     const handleSubmit = (latitude, longitude) => {
         setCoordinates({ latitude: latitude, longitude: longitude });
+        setError(null);
+        setSubmitCount(submitCount + 1);
     }
 
     const handleError = (error) => {
@@ -24,7 +25,7 @@ const App = () => {
     }
 
     useEffect(() => {
-        if (!isShallowEqual(previousCoordinatesRef.current, coordinates)) {
+        if (submitCount > 0) {
             weatherGovApiRequest(
                 `https://api.weather.gov/points/${ coordinates.latitude },${ coordinates.longitude }`
             )
@@ -37,9 +38,10 @@ const App = () => {
                 })
                 .catch(error => {
                     setError(handleWeatherGovError(error));
+                    setForecastUrls({});
                 });
         }
-    }, [ coordinates ])
+    }, [ submitCount ])
 
     return (
         <div className="container my-5">

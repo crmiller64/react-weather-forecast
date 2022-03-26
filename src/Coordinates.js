@@ -9,17 +9,20 @@ const Coordinates = props => {
     const [ city, setCity ] = useState("");
     const [ state, setState ] = useState("");
     const [ observationStations, setObservationStations ] = useState([]);
+    const [ isLoading, setIsLoading ] = useState(false);
 
     const mapboxToken = process.env.REACT_APP_MAPBOX_TOKEN;
-    const geocodingService = Geocoding({ accessToken: mapboxToken });
+    const geocodingService = Geocoding({ accessToken: mapboxToken, fuzzyMatch: false });
 
     const handleSubmit = event => {
         event.preventDefault();
 
+        setIsLoading(true);
+        setObservationStations([]);
         geocodingService
             .forwardGeocode({
                 query: `${ city }, ${ state }`,
-                limit: 1,
+                limit: 1
             })
             .send()
             .then(response => {
@@ -32,6 +35,9 @@ const Coordinates = props => {
                         "Please check the console log for details.",
                     error: error
                 });
+            })
+            .then(() => {
+                setIsLoading(false);
             });
     }
 
@@ -53,13 +59,18 @@ const Coordinates = props => {
     });
 
     useEffect(() => {
+        setObservationStations([]);
         if (props.observationStationUrl) {
+            setIsLoading(true);
             weatherGovApiRequest(props.observationStationUrl)
                 .then(data => {
                     setObservationStations(data.features)
                 })
                 .catch(error => {
                     props.onError(handleWeatherGovError(error));
+                })
+                .then(() => {
+                    setIsLoading(false);
                 });
         }
     }, [ props.observationStationUrl ]);
@@ -105,7 +116,12 @@ const Coordinates = props => {
                     <div className="mb-3">
                         <button className="btn btn-primary">Submit</button>
                     </div>
-                    { coordinates() &&
+                    { isLoading &&
+                        <div className="spinner-border text-primary" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </div>
+                    }
+                    { !isLoading && coordinates() &&
                         <div className="mb-3">
                                 <span className="form-text">
                                     Your coordinates are: {
@@ -115,7 +131,7 @@ const Coordinates = props => {
                                 </span>
                         </div>
                     }
-                    { observationStations.length > 0 &&
+                    { !isLoading && observationStations.length > 0 &&
                         <div className="mb-3">
                                 <span className="form-text">
                                     Your nearest observation station is: {

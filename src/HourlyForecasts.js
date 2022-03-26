@@ -5,9 +5,14 @@ const HourlyForecasts = props => {
     const [ hourlyForecasts, setHourlyForecasts ] = useState([]);
     const [ isLoading, setIsLoading ] = useState(false);
 
-    const getDateTime = (dateString) => {
-        const d = new Date(dateString);
-        return `${ d.toLocaleDateString() } ${ d.toLocaleTimeString() }`;
+    const getTime = (dateTimeString) => {
+        const d = new Date(dateTimeString);
+        return d.toLocaleTimeString();
+    }
+
+    const getDate = (dateTimeString) => {
+        const d = new Date(dateTimeString);
+        return d.toLocaleDateString();
     }
 
     useEffect(() => {
@@ -30,13 +35,14 @@ const HourlyForecasts = props => {
     const forecasts = hourlyForecasts.map((forecast, index) =>
         <div key={ index } className="list-group-item">
             <div className="d-flex w-100 justify-content-between">
-                <h5 className="mb-1">{ getDateTime(forecast.startTime) }</h5>
+                <h5 className="mb-1">{ getTime(forecast.startTime) }</h5>
                 <small>{ forecast.temperature }&deg;{ forecast.temperatureUnit }</small>
             </div>
             <div className="d-flex w-100 justify-content-between">
                 <p className="mb-1">{ forecast.shortForecast }</p>
                 <small>{ forecast.windSpeed } { forecast.windDirection }</small>
             </div>
+            <small>{ getDate(forecast.startTime) }</small>
         </div>
     );
 

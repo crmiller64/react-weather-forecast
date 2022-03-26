@@ -5,7 +5,6 @@ import Coordinates from "./Coordinates";
 import Forecasts from "./Forecasts";
 import HourlyForecasts from "./HourlyForecasts";
 
-import isShallowEqual from "./utils/objectShallowEqual";
 import { weatherGovApiRequest, handleWeatherGovError } from "./utils/weatherGovApiRequest";
 
 const App = () => {

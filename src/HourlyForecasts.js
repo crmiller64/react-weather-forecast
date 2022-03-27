@@ -5,6 +5,8 @@ const HourlyForecasts = props => {
     const [ hourlyForecasts, setHourlyForecasts ] = useState([]);
     const [ isLoading, setIsLoading ] = useState(false);
 
+    const { forecastHourlyUrl, onError } = props;
+
     const getTime = (dateTimeString) => {
         const d = new Date(dateTimeString);
         return d.toLocaleTimeString();
@@ -17,20 +19,20 @@ const HourlyForecasts = props => {
 
     useEffect(() => {
         setHourlyForecasts([]);
-        if (props.forecastHourlyUrl) {
+        if (forecastHourlyUrl) {
             setIsLoading(true);
-            weatherGovApiRequest(props.forecastHourlyUrl)
+            weatherGovApiRequest(forecastHourlyUrl)
                 .then(data => {
                     setHourlyForecasts(data.properties.periods);
                 })
                 .catch(error => {
-                    props.onError(handleWeatherGovError(error));
+                    onError(handleWeatherGovError(error));
                 })
                 .then(() => {
                     setIsLoading(false);
                 });
         }
-    }, [ props.forecastHourlyUrl ]);
+    }, [ forecastHourlyUrl, onError ]);
 
     const forecasts = hourlyForecasts.map((forecast, index) =>
         <div key={ index } className="list-group-item">

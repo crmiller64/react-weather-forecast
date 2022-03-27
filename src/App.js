@@ -13,6 +13,8 @@ const App = () => {
     const [ forecastUrls, setForecastUrls ] = useState({});
     const [ error, setError ] = useState(null);
 
+    const previousSubmitCount = useRef(submitCount);
+
     const handleSubmit = (latitude, longitude) => {
         setCoordinates({ latitude: latitude, longitude: longitude });
         setError(null);
@@ -24,7 +26,7 @@ const App = () => {
     }
 
     useEffect(() => {
-        if (submitCount > 0) {
+        if (submitCount > 0 && submitCount !== previousSubmitCount.current) {
             setForecastUrls({});
             weatherGovApiRequest(
                 `https://api.weather.gov/points/${ coordinates.latitude },${ coordinates.longitude }`
@@ -40,7 +42,8 @@ const App = () => {
                     setError(handleWeatherGovError(error));
                 });
         }
-    }, [ submitCount ])
+        previousSubmitCount.current = submitCount;
+    }, [ submitCount, coordinates ])
 
     return (
         <div className="container my-5">

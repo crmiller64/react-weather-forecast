@@ -5,22 +5,24 @@ const Forecasts = props => {
     const [ dailyForecasts, setDailyForecasts ] = useState([]);
     const [ isLoading, setIsLoading ] = useState(false);
 
+    const { forecastUrl, onError } = props;
+
     useEffect(() => {
         setDailyForecasts([]);
-        if (props.forecastUrl) {
+        if (forecastUrl) {
             setIsLoading(true);
-            weatherGovApiRequest(props.forecastUrl)
+            weatherGovApiRequest(forecastUrl)
                 .then(data => {
                     setDailyForecasts(data.properties.periods);
                 })
                 .catch(error => {
-                    props.onError(handleWeatherGovError(error));
+                    onError(handleWeatherGovError(error));
                 })
                 .then(() => {
                     setIsLoading(false);
                 });
         }
-    }, [ props.forecastUrl ]);
+    }, [ forecastUrl, onError ]);
 
     const forecasts = dailyForecasts.map((forecast, index) =>
         <div key={ index } className="list-group-item">

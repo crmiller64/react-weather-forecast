@@ -11,6 +11,9 @@ const Coordinates = props => {
     const [ observationStations, setObservationStations ] = useState([]);
     const [ isLoading, setIsLoading ] = useState(false);
 
+    const { latitude, longitude } = props.coordinates;
+    const { observationStationUrl, onSubmit, onError } = props;
+
     const mapboxToken = process.env.REACT_APP_MAPBOX_TOKEN;
     const geocodingService = Geocoding({ accessToken: mapboxToken, fuzzyMatch: false });
 
@@ -27,10 +30,10 @@ const Coordinates = props => {
             .send()
             .then(response => {
                 const [ longitude, latitude ] = response.body.features[0].geometry.coordinates;
-                props.onSubmit(latitude, longitude);
+                onSubmit(latitude, longitude);
             }, error => {
                 console.log(error);
-                props.onError({
+                onError({
                     message: "A problem occurred while getting coordinates for the given city and state. " +
                         "Please check the console log for details.",
                     error: error
@@ -47,33 +50,26 @@ const Coordinates = props => {
         </option>
     );
 
-    const coordinates = () => {
-        if (props.coordinates.latitude && props.coordinates.longitude) {
-            return { latitude: props.coordinates.latitude, longitude: props.coordinates.longitude };
-        }
-        return false;
-    }
-
     useEffect(() => {
         addFormValidation();
     });
 
     useEffect(() => {
         setObservationStations([]);
-        if (props.observationStationUrl) {
+        if (observationStationUrl) {
             setIsLoading(true);
-            weatherGovApiRequest(props.observationStationUrl)
+            weatherGovApiRequest(observationStationUrl)
                 .then(data => {
                     setObservationStations(data.features)
                 })
                 .catch(error => {
-                    props.onError(handleWeatherGovError(error));
+                    onError(handleWeatherGovError(error));
                 })
                 .then(() => {
                     setIsLoading(false);
                 });
         }
-    }, [ props.observationStationUrl ]);
+    }, [ observationStationUrl, onError ]);
 
     return (
         <div className="card shadow">
@@ -121,12 +117,12 @@ const Coordinates = props => {
                             <span className="visually-hidden">Loading...</span>
                         </div>
                     }
-                    { !isLoading && coordinates() &&
+                    { !isLoading && props.coordinates &&
                         <div className="mb-3">
                                 <span className="form-text">
                                     Your coordinates are: {
-                                    `${ coordinates().latitude.toFixed(2) }, 
-                                    ${ coordinates().longitude.toFixed(2) }`
+                                    `${ latitude.toFixed(2) }, 
+                                    ${ longitude.toFixed(2) }`
                                 }
                                 </span>
                         </div>

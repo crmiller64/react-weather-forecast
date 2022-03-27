@@ -1,7 +1,11 @@
 {
   "name": "react-weather-forecast",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "description": "A simple weather forecast web app that consumes the weather.gov API. Made with JavaScript and React.",
   "private": true,
+  "license": "BSD-3-Clause",
+  "author": "Caleb Miller <crmiller128@gmail.com> (https://calebmiller.dev/)",
+  "main": "index.js",
   "dependencies": {
     "@mapbox/mapbox-sdk": "^0.13.3",
     "@testing-library/jest-dom": "^5.16.2",

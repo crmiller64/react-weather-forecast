@@ -1,9 +1,44 @@
 # ☀️ USA Weather Forecast
 
-A simple weather forecast web app that consumes the NWS (National Weather Service) API on weather.gov. Made with
+A simple weather forecast web app that consumes the NWS (National Weather Service) web API on weather.gov. Made with
 JavaScript and React.
 
-## Available Scripts
+## Setup
+
+### Mapbox Access Token
+
+This app uses the Mapbox web API to get the geographic coordinates (latitude, longitude) for a location submitted by the
+user. An access token is required to use Mapbox's web API - as such you will need to do a bit of setup to provide the
+app with a valid access token before running. If you don't have an access token for the Mapbox API you will first need
+to create an account with Mapbox, then you can find your access token(s) on your account dashboard (more info on
+Mapbox's access tokens can be found [here](https://docs.mapbox.com/help/getting-started/access-tokens/)).
+
+This app is configured to read the Mapbox access token through the
+`REACT_APP_MAPBOX_TOKEN` environment variable. Once you have your Mapbox access token you can assign it to the
+`REACT_APP_MAPBOX_TOKEN` environment variable with the following steps:
+
+1. Open terminal
+2. `cd react-weather-forecast`
+3. `touch .env`
+4. `echo "REACT_APP_MAPBOX_TOKEN=myMapboxToken" >> .env`
+    1. Replace `myMapboxToken` with your access token
+
+After running through the above steps you should have an `.env` file in the `react-weather-forecast` that contains your
+Mapbox access token - you can verify this with the following command:
+
+```shell
+cat .env
+```
+
+Your output should look like:
+
+```shell
+REACT_APP_MAPBOX_TOKEN=myMapboxToken
+```
+
+Where `myMapboxToken` above will be your access token.
+
+## Running
 
 In the project directory, you can run:
 
@@ -15,38 +50,9 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more
-information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will
-remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right
-into your project so you have full control over them. All of the commands except `eject` will still work, but they will
-point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you
-shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't
-customize it when you are ready for it.
-
 ## Learn More
 
-* NWS API: https://www.weather.gov/documentation/services-web-api
-* React: https://reactjs.org/
+* [React](https://reactjs.org/)
+* [National Weather Service API](https://www.weather.gov/documentation/services-web-api)
+* [Mapbox API](https://docs.mapbox.com/api/overview/)
+* [Mapbox SDK](https://www.npmjs.com/package/@mapbox/mapbox-sdk)
